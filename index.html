@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Long Shadows</title>
+<meta name="author" content="Vera Hvozdz">
+<meta name="generator" content="Hand-directed by the author; code and calculations written with the help of an AI assistant (Claude, Anthropic). Data: NASA LOLA, JPL DE421.">
+<meta name="description" content="Compare lunar south pole landing sites and dates: Sun and Earth over the real horizon, power and direct-to-Earth communication windows, and a base plan where masts and antennas affect each other.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&family=B612+Mono&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#home"><canvas id="brand-star" aria-hidden="true"></canvas>Long Shadows</a>
+    <nav class="keys" aria-label="Screens"><a href="#sites"><span class="n">01</span><span class="t">Map</span></a><a href="#site"><span class="n">02</span><span class="t">Horizon</span></a><a href="#compare"><span class="n">03</span><span class="t">Compare</span></a><a href="#plan"><span class="n">04</span><span class="t"><span class="long">Base </span>plan</span></a><a href="#about"><span class="n">05</span><span class="t">About</span></a></nav>
+    <div class="xsw" id="xsw" role="group" aria-label="Mode of the site"><button type="button" data-x="0" aria-pressed="true">Standard</button><button type="button" data-x="1" aria-pressed="false" title="More data and tools for specialists">Advanced</button></div>
+    <span class="meta mono">LOLA · JPL DE421 · 2023–2028</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="loading" id="loading">Loading NASA terrain and ephemeris data…</div>
+  <p class="hint" id="hint"></p>
+
+  <!-- 0. HOME -->
+  <section class="view" id="v-home">
+    
+    <div class="home">
+      <div class="home-text">
+        <p class="label">(00) Lunar south pole · 90° S</p>
+        <h1 class="display"><span class="press">Long</span><br><em>Shadows</em></h1>
+        <p class="lede">At the very south pole of the Moon the Sun never climbs more than <span class="oval">1.6°</span> above the horizon, and at the landing sites around it only a few degrees more. In such a low Sun a 10&nbsp;m mast casts a shadow longer than <span class="oval">350&nbsp;m</span>, and a small hill can hide the Sun for days. This tool shows where and when a base gets light and a direct line to Earth. It borrows two studies architects make for every building on Earth: who gets the sunlight, and what stands in the line of sight.</p>
+        <a class="btn primary tour-btn" href="#sites" id="door-tour">▶&nbsp; Start here: a 60-second tour in seven steps</a>
+        <div class="facts">
+          <div><span class="v mono">1.6°</span><span class="label">highest Sun at the pole itself</span></div>
+          <div><span class="v mono">358 m</span><span class="label">shadow of a 10 m mast in that Sun</span></div>
+          <div><span class="v mono">29.5 d</span><span class="label">one turn of the Sun around the sky</span></div>
+        </div>
+        <div class="cta"><a class="btn" href="#sites">Open the site map →</a><a class="btn" href="#plan">Plan a base</a><a class="btn" href="#site" id="cta-replay">Replay a real landing</a></div>
+        <p class="label mode-note">Two modes, switched at the top of the page. <b>Standard</b> explains in plain words. <b>Advanced</b> shows the same results as tables of exact figures, with more data and controls.</p>
+        <a class="door-one" href="#site" id="door-date"><span class="k">Find a landing date</span><span class="t"><span id="door-date-v">The longest stretch of light</span>&nbsp;→</span></a>
+      </div>
+      <div class="home-fig">
+        <canvas id="pole" role="img" aria-label="Shaded terrain of the lunar south pole; the shadows follow the pointer, which acts as the Sun"></canvas>
+        <div class="fig-read mono" id="pole-read">&nbsp;</div>
+        <p class="label fig-note" id="pole-note">Real LOLA terrain, 200 km across, Sun 1.5° above the horizon.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. SITES -->
+  <section class="view" id="v-sites">
+    <div class="page-head" data-n="01">
+      <p class="label">(01) Landing sites</p>
+      <h1>Where is there light, and where is there Earth?</h1>
+      <p>These are 18 places near the Moon's south pole where a lander could set down. Each gets a different share of sunlight, which means power, and of time with Earth above the horizon, which means a direct radio link. Pick a site on the map or in the list, then open its details. Above the map you can step from the whole Moon to the map of the pole to its 3D terrain with moving shadows. Click the map to test a point of your own.</p>
+    </div>
+    <div class="sites-grid">
+      <div>
+        <div class="view-row"><span class="label">View</span><div class="seg" id="view-seg"><button data-v="globe" aria-pressed="false">Whole Moon</button><button data-v="map" aria-pressed="true">Map of the pole</button><button data-v="3d" aria-pressed="false">3D terrain</button></div></div>
+        <div class="map" id="map">
+          <img loading="lazy" decoding="async" src="data/map_relief.jpg" alt="Shaded relief of the lunar south pole from LOLA">
+          <img loading="lazy" decoding="async" src="data/map_sun.jpg" alt="" id="lay-sun">
+          <img loading="lazy" decoding="async" src="data/map_earth.jpg" alt="" id="lay-earth" style="opacity:0">
+          <svg class="grid" id="map-grid" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
+          <span class="corner tl">↑ Near side · toward Earth</span>
+          <span class="corner bl">South pole · R 320 km · LOLA</span>
+          <div class="scale"><i></i>100 km</div>
+        </div>
+        <div class="view3d" id="viewglobe" hidden>
+          <canvas id="cvglobe" tabindex="0" aria-label="3D globe of the whole Moon with day and night for the chosen moment and all landing sites. Drag or use the arrow keys to turn it in any direction, the mouse wheel or plus and minus to zoom."></canvas>
+          <div class="lab3d" id="labglobe"></div>
+          <p class="label msg3d" id="msgglobe" hidden></p>
+          <div class="z3"><button class="btn small" id="zg-in" aria-label="Zoom in">+</button><button class="btn small" id="zg-out" aria-label="Zoom out">−</button><button class="btn small tilt" id="zg-up" aria-label="Tilt up">▲</button><button class="btn small tilt" id="zg-dn" aria-label="Tilt down">▼</button></div>
+          <span class="corner tl" id="hint-globe">Whole Moon · drag to turn any way · wheel to zoom</span>
+        </div>
+        <div class="view3d" id="view3d" hidden>
+          <canvas id="cv3d" tabindex="0" aria-label="3D model of the terrain around the south pole, lit by the Sun of the chosen moment. Drag or use the arrow keys to turn it, the mouse wheel or plus and minus to zoom."></canvas>
+          <div class="lab3d" id="lab3d"></div>
+          <p class="label msg3d" id="msg3d" hidden></p>
+          <div class="z3"><button class="btn small" id="z3-in" aria-label="Zoom in">+</button><button class="btn small" id="z3-out" aria-label="Zoom out">−</button><button class="btn small tilt" id="z3-up" aria-label="Tilt up">▲</button><button class="btn small tilt" id="z3-dn" aria-label="Tilt down">▼</button></div>
+          <span class="corner tl" id="hint-3d">400 km across · heights ×3 · drag to turn · wheel to zoom</span>
+        </div>
+        <div class="timebar bar3d" id="bar3d" hidden>
+          <div class="transport"><button class="play" id="t3-play" aria-label="Play">▶</button><button class="rew" id="t3-rew" aria-label="Back to the start of the period" title="Back to the start of the period"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1.5v9" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M10.5 1.5v9L4 6z" fill="currentColor"/></svg></button></div>
+          <div class="field"><span class="label" id="t3-read" style="text-transform:none;letter-spacing:.04em;font-size:13.5px;color:var(--ink-2)"></span><input type="range" id="t3-range" min="0" max="708" value="0" aria-label="Moment within the period"></div>
+        </div>
+        <div class="map-tools map-only">
+          <span class="label">Map layer</span>
+          <div class="seg" id="layer-seg" style="min-width:270px">
+            <button data-v="sun" aria-pressed="true">Sunlight</button><button data-v="earth" aria-pressed="false">Earth visible</button><button data-v="none" aria-pressed="false">Relief</button>
+          </div>
+        </div>
+        <p class="label map-only" style="margin:10px 0 0;text-transform:none;letter-spacing:.02em;color:var(--ink-2)">Click anywhere on the map to place your own point. Down to 76° S it is calculated with real terrain, in finer detail south of 84.5° S. The nine squares are NASA's Artemis III candidate regions (outlines from USGS).</p>
+        <div class="ramp map-only" id="ramp"><span class="label">25% of the time or less</span><i></i><span class="label">75% or more</span></div>
+        <p class="label map-only" id="ramp-note" style="margin:8px 0 0;text-transform:none;letter-spacing:.02em">Share of time with the Sun in view. NASA LOLA average maps, 18.6-year mean.</p>
+      </div>
+      <div>
+        <div class="chips" id="chips" role="group" aria-label="Filter sites by group"></div>
+        <div class="sort-row"><span class="label">Sort</span><div class="seg" id="sort-seg" role="group" aria-label="Sort the list"></div></div>
+        <div class="list-head"><span class="label">At 10 m · whole year 2027</span><span class="label" id="list-head"></span></div>
+        <p class="label" style="margin:8px 0 0;text-transform:none;letter-spacing:.02em;color:var(--ink-2)">These figures are for the whole of 2027 at 10 m above the ground. On the other screens they follow the date, period and height you choose, so the same site shows other percentages there.</p>
+        <div id="site-list"></div>
+        <p class="label off-map" style="text-transform:none;letter-spacing:.02em">Chandrayaan-3, Chang'e-6, Blue Ghost and Apollo 11 are off this map: they landed far from the pole. Find them on the Whole Moon view.</p>
+        <div class="xlist x-only" id="xlist">
+          <p class="label" style="margin:0">Your list of points <span class="x-tag">Advanced</span></p>
+          <p class="rv-hint" style="margin-top:6px">One point per line: name, latitude, longitude (degrees; south is negative; east longitude). Up to 30 lines. Each is calculated at 10 m for the whole of 2027, with real terrain south of 76° S; south of 80° S it also gets temperature and ice.</p>
+          <textarea id="xl-text" rows="4" spellcheck="false" aria-label="List of points: name, latitude, longitude" placeholder="Rim A, -88.20, 68.5&#10;Ridge B, -87.90, 30.0"></textarea>
+          <div class="csv-row"><button class="btn small" id="xl-run" type="button">Calculate</button><button class="btn small" id="xl-pick" type="button">Load a CSV file</button><input type="file" id="xl-file" accept=".csv,.txt,text/csv,text/plain" hidden><button class="btn small" id="xl-copy" type="button" hidden>Copy results as CSV</button><span class="label" id="xl-msg" role="status"></span></div>
+          <div class="xl-out" id="xl-out"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SITE -->
+  <section class="view" id="v-site">
+    <h1 class="vh">Horizon: the Sun and Earth over the skyline of one site</h1>
+    <div class="site-grid" id="site-grid">
+      <aside class="controls">
+        <div class="field"><label class="label" for="site-select">(02) Landing site</label><select id="site-select"></select>
+          <div class="field" id="custom-box" hidden>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <label class="field"><span class="label">Lat °</span><input type="number" id="c-lat" step="0.01" min="-90" max="90" value="-89.0"></label>
+              <label class="field"><span class="label">Lon °E</span><input type="number" id="c-lon" step="0.01" min="0" max="360" value="0"></label>
+            </div>
+            <p class="note-warn" id="custom-note"></p>
+          </div>
+        </div>
+        <div class="field"><label class="label" for="replay">Replay a real landing</label><select id="replay"></select></div>
+        <div class="field"><span class="label">Height above ground</span>
+          <div class="seg" id="h-seg"><button data-v="2">2 m<br><small>lander</small></button><button data-v="10">10 m<br><small>mast</small></button><button data-v="20">20 m<br><small>tower</small></button></div>
+        </div>
+        <div class="field"><span class="label">Period</span>
+          <div class="seg" id="p-seg"><button data-v="day">Lunar day</button><button data-v="q">3 months</button><button data-v="y">1 year</button></div>
+        </div>
+        <div class="field"><span class="label">Show on panorama</span>
+          <label><input type="checkbox" id="show-sun" checked> <span class="dot sun"></span>Sun path</label>
+          <label><input type="checkbox" id="show-earth" checked> <span class="dot earth"></span>Earth path</label>
+        </div>
+        <div class="field"><button class="btn" id="add-compare">Add to comparison</button><button class="btn copy-link" hidden>Copy link to this view</button>
+          <p class="label" id="site-meta" style="margin:0;text-transform:none;letter-spacing:.02em"></p></div>
+      </aside>
+
+      <div class="center">
+        <div>
+          <div class="pano-box"><canvas id="pano" role="img" aria-label="Horizon panorama with Sun and Earth paths"></canvas></div>
+          <div class="pano-cap"><span id="pano-l"></span><span id="pano-r"></span></div>
+        </div>
+        <div class="timebar">
+          <div class="transport"><button class="play" id="play" aria-label="Play">▶</button><button class="rew" id="rew" aria-label="Back to the start of the period" title="Back to the start of the period"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1.5v9" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M10.5 1.5v9L4 6z" fill="currentColor"/></svg></button></div>
+          <label class="field"><span class="label">Date &amp; time (UTC)</span><button type="button" class="dtp" id="dt" aria-haspopup="dialog"></button></label>
+          <div class="range-cell field"><span class="label" id="range-label">Within period</span><input type="range" id="range" min="0" max="708" value="0" aria-label="Time within period"></div>
+        </div>
+        <div class="anchor-row"><span class="label" id="win-label"></span><button class="btn small" id="anchor">Start the period at this moment</button></div>
+        <p class="note-warn" id="site-note" hidden></p>
+        <div class="replay" id="replay-card" hidden></div>
+        <div class="verdict" id="verdict"></div>
+        <div class="countdown">
+          <div class="cd sun"><span class="label" id="cd-sun-l">Sunset in</span><span class="v" id="cd-sun">—</span><span class="s" id="cd-sun-s"></span></div>
+          <div class="cd earth"><span class="label" id="cd-earth-l">Earthset in</span><span class="v" id="cd-earth">—</span><span class="s" id="cd-earth-s"></span></div>
+        </div>
+        <div class="tiles" id="tiles"></div>
+        <p class="energy" id="energy"></p>
+        <div>
+          <div class="label" style="margin-bottom:8px">Timeline of the period — click to jump</div>
+          <canvas id="strip" data-h="60" role="img" aria-label="Timeline of the period: hours with the Sun and with Earth in view. Click to jump to a moment."></canvas>
+          <div class="legend"><span><span class="dot sun"></span>Sun up</span><span><span class="dot earth"></span>Earth in view</span><span><span class="dot none"></span>no</span><span>← → keys step one hour, with Shift one day</span></div>
+          <div class="cal">
+            <div class="cal-head"><span class="label" id="cal-title"></span><span class="label" id="cal-read" role="status"></span></div>
+            <canvas id="cal" tabindex="0" aria-label="Landing calendar: for each date of the year, the days of unbroken sunlight that follow a landing. The best dates are also listed as buttons below."></canvas>
+            <div class="cal-best" id="cal-best"></div>
+          </div>
+          <div class="csv-row x-only"><span class="label">Hourly table of this period <span class="x-tag">Advanced</span></span><button class="btn small" id="csv-save">Download CSV</button><button class="btn small" id="csv-copy">Copy CSV</button><span class="label" id="csv-msg" role="status"></span></div>
+          <div class="csv-row x-only"><span class="label">Skyline of this site, 720 directions <span class="x-tag">Advanced</span></span><button class="btn small" id="hz-save">Download CSV</button><button class="btn small" id="hz-copy">Copy CSV</button></div>
+        </div>
+      </div>
+
+      <div class="why-col">
+        <div class="why">
+          <div class="why-head"><h3 aria-level="2">Why so?</h3><button class="why-toggle" id="why-toggle" aria-label="Hide explanation" aria-expanded="true">▸</button></div>
+          <div class="why-body" id="why"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. COMPARE -->
+  <section class="view" id="v-compare">
+    <h1 class="vh">Compare sites and landing dates</h1>
+    <div class="cmp-top">
+      <div class="field"><span class="label">(03) Compare</span><div class="seg" id="mode-seg"><button data-v="sites">3 sites, 1 date</button><button data-v="dates">1 site, 3 dates</button></div></div>
+      <div class="field" id="cmp-date-field"><label class="label" for="cmp-dt">Landing date (UTC)</label><button type="button" class="dtp" id="cmp-dt" aria-haspopup="dialog"></button></div>
+      <div class="field" id="cmp-site-field" hidden><label class="label" for="cmp-site">Landing site</label><select id="cmp-site"></select></div>
+      <div class="field"><span class="label">Launch slips — move the dates</span>
+        <div class="seg" id="shift-seg"><button data-d="-7">−7 d</button><button data-d="-1">−1 d</button><button data-d="1">+1 d</button><button data-d="7">+7 d</button></div>
+      </div>
+      <div class="field"><span class="label">Height</span><div class="seg" id="h-seg-2"><button data-v="2">2 m</button><button data-v="10">10 m</button><button data-v="20">20 m</button></div></div>
+      <div class="field"><span class="label">Period</span><div class="seg" id="p-seg-2"><button data-v="day">Lunar day</button><button data-v="q">3 months</button><button data-v="y">1 year</button></div></div>
+    </div>
+    <p class="note-warn" id="cmp-note" hidden></p>
+    <p class="cmp-sum" id="cmp-sum" hidden></p>
+    <div class="cmp" id="cmp"></div>
+    <div class="xall x-only" id="xall">
+      <p class="label" style="margin:0">All sites in one table <span class="x-tag">Advanced</span></p>
+      <p class="rv-hint" style="margin-top:6px" id="xa-note"></p>
+      <div class="csv-row"><button class="btn small" id="xa-copy" type="button">Copy as CSV</button><button class="btn small" id="xa-save" type="button">Download CSV</button><span class="label" id="xa-msg" role="status"></span></div>
+      <div class="xl-out" id="xa-out"></div>
+    </div>
+    <p class="label" id="cmp-foot" style="margin:14px 0 0;text-transform:none;letter-spacing:.02em;max-width:95ch">Sun elevation is measured from the horizon of a perfectly smooth Moon (0°). A high ridge sees a little below that line, so a site can be in sunlight with the Sun at 0° or even lower. Period values start at the landing date.</p>
+  </section>
+
+  <!-- 4. BASE PLAN -->
+  <section class="view" id="v-plan">
+    <h1 class="vh">Base plan</h1>
+    <div class="plan-grid">
+      <aside class="tools">
+        <h3 aria-level="2">(04) Place objects</h3>
+        <button class="btn tool" data-tool="m5" aria-pressed="false"><span class="dot sun"></span>Solar mast 5 m</button>
+        <button class="btn tool" data-tool="m10" aria-pressed="true"><span class="dot sun"></span><span>Solar mast 10 m<small>≈ NASA VSAT size</small></span></button>
+        <button class="btn tool" data-tool="m20" aria-pressed="false"><span class="dot sun"></span>Solar tower 20 m</button>
+        <button class="btn tool" data-tool="a3" aria-pressed="false"><span class="dot earth"></span>Antenna 3 m</button>
+        <button class="btn tool" data-tool="move" aria-pressed="false">✥ Select / move</button>
+        <button class="btn" id="del-obj" disabled>Delete selected</button>
+        <button class="btn" id="clear-plan">Clear all</button>
+        <button class="btn" id="reset-plan">Reset example layout</button>
+        <div class="field"><span class="label">Rover</span><button class="btn rvk" id="rover-open" aria-pressed="false" aria-controls="rover">Plan a rover route</button></div>
+        <div class="field"><span class="label">Map view</span><div class="seg" id="z-seg"><button data-z="1200">Close-up<br><small></small></button><button data-z="4000">Whole area<br><small></small></button></div></div>
+        <div class="field x-only"><span class="label">Show on the map <span class="x-tag">Advanced</span></span><div class="seg" id="pl-seg"><button data-l="relief">Relief</button><button data-l="light">Sunlight</button></div></div>
+        <div class="field x-only"><span class="label">Period <span class="x-tag">Advanced</span></span><div class="seg" id="p-seg-3"><button data-v="day">Lunar day</button><button data-v="q">3 months</button><button data-v="y">1 year</button></div></div>
+        <div class="field x-only" id="ob-xy"><span class="label">Selected object, metres from the centre <span class="x-tag">Advanced</span></span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label class="field"><span class="label">East</span><input type="number" id="ob-e" step="1" disabled></label><label class="field"><span class="label">North</span><input type="number" id="ob-n" step="1" disabled></label></div></div>
+        <div class="field x-only"><span class="label">Layout as CSV <span class="x-tag">Advanced</span></span><div class="csv-row" style="margin-top:0"><button class="btn small" id="pl-copy" type="button">Copy</button><button class="btn small" id="pl-save" type="button">Download</button><span class="label" id="pl-msg" role="status"></span></div></div>
+        <p class="label" id="plan-hint" style="margin:0;text-transform:none;letter-spacing:.02em">Site: Connecting Ridge. Shift- or Ctrl-click to select several; in Select mode drag a box. Arrow keys move the selection by 10 m (with Shift 50 m), Delete removes it. With nothing selected, ← → step the time.</p>
+      </aside>
+      <div>
+        <div class="timebar plan-time">
+          <div class="transport"><button class="play" id="plan-play" aria-label="Play">▶</button><button class="rew" id="plan-rew" aria-label="Back to the start of the period" title="Back to the start of the period"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1.5v9" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M10.5 1.5v9L4 6z" fill="currentColor"/></svg></button></div>
+          <label class="field"><span class="label">Date &amp; time (UTC)</span><button type="button" class="dtp" id="plan-dt" aria-haspopup="dialog"></button></label>
+          <div class="range-cell field"><span class="label" id="plan-range-label">Within period</span><input type="range" id="plan-range" min="0" max="708" value="0" aria-label="Time within period"></div>
+        </div>
+        <div class="view-row x-only" id="plan-sites-row"><span class="label">Site <span class="x-tag">Advanced</span></span><div class="seg" id="plan-sites" role="group" aria-label="Site of the base plan"></div><span class="label" id="plan-sites-msg" role="status" style="text-transform:none"></span></div>
+        <p class="label" id="plan-now"></p>
+        <div class="plan-frame"><canvas id="plan-cv" role="img" aria-label="Base plan map: terrain, placed objects and their shadows at the chosen hour. The same results are listed under Checks."></canvas></div>
+        <p class="label plan-probe" id="plan-probe"></p>
+        <div class="legend"><span><span class="dot" style="background:#3b3a36"></span>Dark strip: each mast's shadow at the chosen moment. Dotted line: how far its shadow reaches during the period.</span><span><span class="dot earth"></span>Blue line: direction to Earth now; faint fan: during the period</span><span>↑ north; the south pole is 17 km beyond the bottom edge · relief: NASA LOLA, 20 m per pixel, contours every 25 m</span></div>
+    <div class="rvwin" id="rover" hidden role="dialog" aria-label="Rover route">
+      <div class="rv-bar" id="rover-bar"><span class="label">Rover route</span><button class="rv-x" id="rover-close" aria-label="Close the rover window">×</button></div>
+      <div class="rv-body">
+        <div class="rv-pick"><button class="btn small rvk" id="rv-set-start" aria-pressed="false"><i class="rv-mk s"></i>Set start</button><button class="btn small rvk" id="rv-set-goal" aria-pressed="false"><i class="rv-mk g"></i>Set goal</button></div>
+        <p class="rv-hint" id="rv-hint"></p>
+        <div class="rv-fields">
+          <label class="field"><span class="label">Speed, km/h</span><input type="number" id="rv-speed" min="0.05" max="15" step="0.05" value="0.7" inputmode="decimal"></label>
+          <label class="field"><span class="label">Steepest slope, °</span><input type="number" id="rv-slope" min="3" max="30" step="1" value="15" inputmode="decimal"></label>
+          <label class="field wide"><span class="label">Battery lasts without Sun, hours</span><input type="number" id="rv-batt" min="0.5" max="200" step="0.5" value="2" inputmode="decimal"></label>
+          <label class="rv-check x-only"><input type="checkbox" id="rv-back"> Drive back to the start <span class="x-tag">Advanced</span></label>
+          <label class="rv-check x-only"><input type="checkbox" id="rv-slow"> Slower on slopes: half speed at the steepest allowed <span class="x-tag">Advanced</span></label>
+          <div class="rv-check x-only"><button class="btn small" id="rv-wait" type="button">Find a later start</button> <span class="x-tag">Advanced</span></div>
+          <p class="rv-hint x-only" id="rv-wait-msg" role="status" style="grid-column:1/-1"></p>
+          <label class="field x-only"><span class="label">Start: east, m</span><input type="number" id="rv-se" step="1"></label><label class="field x-only"><span class="label">Start: north, m</span><input type="number" id="rv-sn" step="1"></label>
+          <label class="field x-only"><span class="label">Goal: east, m</span><input type="number" id="rv-ge" step="1"></label><label class="field x-only"><span class="label">Goal: north, m</span><input type="number" id="rv-gn" step="1"></label>
+          <div class="rv-check x-only"><button class="btn small" id="rv-copy" type="button">Copy route as CSV</button><button class="btn small" id="rv-save" type="button">Download</button> <span class="x-tag">Advanced</span></div>
+        </div>
+        <div class="rv-out" id="rv-out" aria-live="polite"></div>
+      </div>
+    </div>
+      </div>
+      <div class="checks-col">
+        <div class="checks" id="checks"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. ABOUT -->
+  <section class="view" id="v-about">
+    <div class="page-head" data-n="05"><p class="label">(05) About</p><h1>Data, method and limits</h1></div>
+    <div class="about" id="about-body"></div>
+  </section>
+</main>
+<div class="dtpop" id="dtpop" hidden role="dialog" aria-label="Choose date and time, UTC"></div>
+<div class="tour" id="tour" hidden role="dialog" aria-label="Guided tour">
+  <div class="tour-top"><span class="label" id="tour-n"></span><button class="rv-x" id="tour-x" aria-label="Leave the tour">×</button></div>
+  <h3 id="tour-h"></h3><p id="tour-p" aria-live="polite"></p>
+  <div class="tour-nav"><span class="tour-dots" id="tour-dots" aria-hidden="true"></span><button class="btn small" id="tour-back">← Back</button><button class="btn small primary" id="tour-next">Next →</button></div>
+</div>
+<footer class="wrap">Long Shadows · NASA Space Apps Challenge 2026, “Lunar Landing Site Navigator” · Not an official NASA product · Code under Apache 2.0</footer>
+<script src="js/00-state.js"></script>
+<script src="js/01-maths.js"></script>
+<script src="js/02-terrain.js"></script>
+<script src="js/03-data.js"></script>
+<script src="js/04-datepicker.js"></script>
+<script src="js/05-panorama.js"></script>
+<script src="js/06-calendar.js"></script>
+<script src="js/07-pole.js"></script>
+<script src="js/08-gpu.js"></script>
+<script src="js/09-views.js"></script>
+<script src="js/10-three-d.js"></script>
+<script src="js/11-energy.js"></script>
+<script src="js/12-plan.js"></script>
+<script src="js/13-rover.js"></script>
+<script src="js/14-verdict.js"></script>
+<script src="js/15-replay.js"></script>
+<script src="js/16-tour.js"></script>
+<script src="js/17-about.js"></script>
+<script src="js/18-link.js"></script>
+<script src="js/19-routing.js"></script>
+<script src="js/20-expert-table.js"></script>
+<script src="js/21-expert-list.js"></script>
+<script src="js/22-expert.js"></script>
+<script src="js/23-main.js"></script>
+</body>
+</html>
