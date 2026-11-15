@@ -34,6 +34,8 @@ async def run(browser):
     bad = await page.evaluate("""() => { const bad = []; for (const s of S.sites) { const c = series(s.id, "10");
         for (let i = 0; i < S.n; i += 97) if (!(c.sf[i] >= 0 && c.sf[i] <= 1) || !(Math.abs(c.sel[i]) <= 90) || !(Math.abs(c.eel[i]) <= 90) || !(c.saz[i] >= 0 && c.saz[i] < 360.001)) { bad.push(s.id); break; } } return bad; }""")
     c.ok("every site has a complete Sun and Earth series for the whole period", not bad, bad)
+    r = await page.evaluate("[0.9999, 1.9999, 3.416, 47.999, 95.6, 71.7].map(fmtDur)")
+    c.ok("durations are rounded before they are split: never '60 min' or '24 h'", r == ["1 h", "2 h", "3 h 25 min", "48 h", "4 d", "3 d"], r)
     c.ok("no script errors", not page.errors, page.errors[:3])
     await page.context.close()
     return c

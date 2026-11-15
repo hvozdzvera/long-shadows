@@ -103,9 +103,10 @@ function nextChangeE(c, i) {
 }
 function fmtDur(h) {
   if (h === null) return "beyond 2028";
-  if (h < 1) return `${Math.max(1, Math.round(h * 60))} min`;
-  if (h < 48) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); return mm ? `${hh} h ${mm} min` : `${hh} h`; }
-  const d = Math.floor(h / 24), hh = Math.round(h - d * 24); return hh ? `${d} d ${hh} h` : `${d} d`;
+  const m = Math.round(h * 60);
+  if (m < 60) return `${Math.max(1, m)} min`;
+  if (h < 48) { const hh = Math.floor(m / 60), mm = m % 60; return mm ? `${hh} h ${mm} min` : `${hh} h`; }
+  const t = Math.round(h), d = Math.floor(t / 24), hh = t % 24; return hh ? `${d} d ${hh} h` : `${d} d`;
 }
 const fx = (v, d = 0) => { const t = (+v).toFixed(d); return +t === 0 ? t.replace("-", "") : t.replace("-", "\u2212"); };   // a number for the screen: real minus sign, and no "-0.0" (CSV, links and inputs keep the plain hyphen)
 const fmtPct = (v) => (S.expert || (v < 9.95 && v > 0) ? v.toFixed(1) : Math.round(v)) + "%";      // Advanced: always one decimal
