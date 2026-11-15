@@ -8,7 +8,7 @@ Live site: **https://hvozdzvera.github.io/long-shadows/**
 
 At the Moon's south pole the Sun never climbs above 1.6°, so a hill a few kilometres away decides whether a lander has power. Long Shadows shows, for 18 landing sites and for any point you click, the Sun and Earth moving over the real skyline, and turns that into a plain verdict for a chosen landing date: how long the sunlight lasts, whether Earth is in view, how steep the ground is, how far the nearest permanent shadow lies. On top of that it lets you lay out a base on real terrain, see which mast shades which, and send a rover round the shadow that would empty its battery.
 
-The tool is meant for quick comparison of sites and dates and for teaching. It is not a mission design tool: see *Limits* on the About screen.
+The tool is meant for quick comparison of sites and dates and for teaching. It is not a mission design tool: see *Limits* on the About screen. Finer terrain exists and is not used in this version: NASA's LROC NAC digital terrain models (down to 1–2 m per pixel) for parts of the Connecting Ridge, Shackleton rim, Malapert and Nobile areas; they are the natural next step for slope and hazards at lander scale.
 
 ## Judge guide: the tool in 60 seconds
 

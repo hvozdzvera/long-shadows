@@ -90,6 +90,7 @@ function renderAbout() {
     <dt>CLPS</dt><dd>NASA's Commercial Lunar Payload Services: private landers that carry NASA instruments.</dd></dl></article>
   <article class="ab"><span class="ab-n">${L()}</span><h2>Limits</h2><ul>
     <li>Terrain is as good as LOLA: 20–240 m pixels. Slopes are averages over 160 m: rocks and small craters, which matter to a real lander, are not seen. Slope and shadow distance are not computed for your own point.</li>
+    <li>Finer terrain exists and is not used in this version: NASA's LROC NAC digital terrain models, down to 1–2 m per pixel, cover parts of the Connecting Ridge, Shackleton rim, Malapert and Nobile areas. They are the natural next step for slope and hazards at lander scale.</li>
     <li>Custom points use coarser terrain than the named sites: LOLA at 240 m per pixel south of 84.5° S, 960 m down to 76° S, and a smooth Moon elsewhere. Sites far from the pole are shown with a smooth horizon.</li>
     <li>Masts are simple vertical arrays 4 m wide that always face the Sun. Energy figures are rough: 1361 W of sunlight per square metre, cells that turn 30% of it into electricity, batteries at 200 Wh per kilogram. Dust, heat and cold are not modelled.</li>
     <li>The rover is a simple model. Speed is the same on any slope, it does not wait for the Sun, masts do not shade it, and rocks and craters smaller than 40 m are not seen. Speed and slope limit start at the published figures for NASA's VIPER rover (about 0.7 km/h, 15°); the battery figure is only an example.</li>
