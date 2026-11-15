@@ -1,10 +1,11 @@
 """Independent check of the rover route planner: the same rules written a second time in Python (heapq, plain loops),
 working from the files the browser gets. Writes reference results that the browser test compares with."""
 import sys, json, heapq, math, base64, numpy as np
+from paths import DATA
 sys.path.insert(0, '.')
 from PIL import Image
 from ephem import azel
-D = '../site/data/'
+D = DATA
 M = json.load(open(D + 'rover.json')); G = M['grid']; CELL = M['cell_m']
 HZ = np.asarray(Image.open(D + M['file'])).astype(float) * M['q'] - M['off']          # (G*G, 360) degrees
 SL = np.frombuffer(base64.b64decode(M['slope_b64']), np.uint8).astype(float) * M['slope_q']

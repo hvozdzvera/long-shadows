@@ -1,6 +1,7 @@
 # convert binary outputs to base64 JSON (artifact hosting serves only text/image types)
 import json, base64, os
-D = '../site/data/'
+from paths import DATA
+D = DATA
 if os.path.exists(D + 'ephem.bin'):
     m = json.load(open(D + 'ephem.json')); m['data_b64'] = base64.b64encode(open(D + 'ephem.bin', 'rb').read()).decode()
     json.dump(m, open(D + 'ephem.json', 'w')); os.remove(D + 'ephem.bin')

@@ -7,9 +7,10 @@ share gentler than 10 deg. The 500 m circle is the same one used for the 80 m ma
 Check of the georeferencing: heights of the 5 m map of Site01 against the LOLA 20 m polar map at the same points.
 Writes into site/data/expert.json."""
 import sys, json, glob, numpy as np, tifffile
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from dem import PolarDEM
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 NAMES = {"01": "Connecting Ridge", "04": "Shackleton Rim", "07": "Peak near Shackleton", "11": "de Gerlache Rim", "20": "Leibnitz Beta Plateau", "23": "Malapert Massif"}
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)
 
@@ -27,7 +28,7 @@ def circle(a, x0, y0, px, x, y, r):
     return v if v.size > 20 else None
 
 maps = {f.split("Site")[1][:2]: load(f) for f in sorted(glob.glob(D + "Site*_5mpp_slp.tif"))}
-sites = json.load(open('/home/claude/ls/site/data/sites.json')); out = {}
+sites = json.load(open(DATA + 'sites.json')); out = {}
 for s in sites:
     if s['lat'] > -80: continue
     x, y = ultra.ll2xy(s['lat'], s['lon'])
@@ -56,6 +57,6 @@ try:
     chk = dict(points=4000, r=round(r, 5), mad_m=round(float(np.median(np.abs(d - np.median(d)))), 1), mad_shifted_100m=round(float(np.median(np.abs((h5 - h20s) - np.median(h5 - h20s)))), 1))
 except Exception as e: print("height check skipped:", e)
 if "--write" in sys.argv:
-    P = '/home/claude/ls/site/data/expert.json'; e = json.load(open(P))
+    P = DATA + 'expert.json'; e = json.load(open(P))
     e['slope5m'] = dict(src="LOLA 5 m site maps (Barker et al. 2021), slope files", check=chk, sites=out)
     json.dump(e, open(P, 'w'), separators=(',', ':')); print('written', len(out), 'sites')

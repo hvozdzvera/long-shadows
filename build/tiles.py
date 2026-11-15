@@ -1,13 +1,14 @@
 # Terrain tiles for the browser (custom points) + validation of the browser horizon method
 import sys, json, numpy as np
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from PIL import Image
 from dem import PolarDEM, R
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 coarse = PolarDEM(D + "LDEM_60S_240M.IMG", 7760, 240, 3879.5)
 fine = PolarDEM(D + "LDEM_80S_80M.IMG", 7600, 80, 3799.5)
 sunmap = PolarDEM(D + "AVGVISIB_65S_240M_201608.IMG", 6420, 240, 3209.5)
-OUT = '../site/data/'
+OUT = DATA
 OFF = 20000
 def tile(N, px, name, q=1):
     g = (np.arange(N) + 0.5) * px - N * px / 2

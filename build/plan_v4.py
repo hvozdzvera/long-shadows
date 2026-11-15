@@ -1,5 +1,6 @@
 # Base-plan data in a TRUE local frame: up = north (away from the south pole), right = east.
 import sys, json, base64, numpy as np
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from PIL import Image
 from scipy.ndimage import gaussian_filter
@@ -7,9 +8,9 @@ from skimage.measure import find_contours, approximate_polygon
 from dem import PolarDEM
 import os
 SITE = os.environ.get('LS_SITE', 'ridge'); SUF = '' if SITE == 'ridge' else '_' + SITE          # which site the box is centred on; files of other sites carry its id
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)
-OUT = '../site/data/'
+OUT = DATA
 ridge = next(s for s in json.load(open('sites_out.json')) if s['id'] == SITE)
 lat, lon = ridge['lat'], ridge['lon']
 x0, y0 = ultra.ll2xy(lat, lon); nrm = np.hypot(x0, y0)

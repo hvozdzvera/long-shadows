@@ -1,14 +1,15 @@
 import sys, json, numpy as np
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from PIL import Image
 from dem import PolarDEM, R
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 coarse = PolarDEM(D + "LDEM_60S_240M.IMG", 7760, 240, 3879.5)
 fine = PolarDEM(D + "LDEM_80S_80M.IMG", 7600, 80, 3799.5)
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)
 sunm = PolarDEM(D + "AVGVISIB_65S_240M_201608.IMG", 6420, 240, 3209.5)
 earm = PolarDEM(D + "AVGVISIB_65S_240M_201608_EARTH.IMG", 6420, 240, 3209.5)
-OUT = '../site/data/'
+OUT = DATA
 def hillshade(H, px, az_deg=135, alt_deg=25):
     gy, gx = np.gradient(H, px)          # rows = y, cols = x
     slope = np.arctan(np.hypot(gx, gy)); aspect = np.arctan2(-gx, gy)

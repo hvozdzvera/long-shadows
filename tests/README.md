@@ -12,7 +12,7 @@ python3 tests/run.py rover      # one group
 | Group | What it checks |
 |---|---|
 | `numbers` | Sunlight, Earth visibility and longest night computed in the browser equal the figures of the Python pipeline for all 18 sites at three heights; sunlight is close to NASA's LOLA illumination maps; Chandrayaan-3 sunset falls on 4 Sep 2023; ground slope at the IM-1 site is close to the 12° reported by the LRO camera team. |
-| `screens` | Six screens at six widths from 360 to 1920 px: no script errors and no sideways scroll. The Horizon screen is swept through every site, height, period and replay at phone width. The first screen puts the tour first; the list of sites is short on a phone. |
+| `screens` | Six screens at six widths from 360 to 1920 px: no script errors and no sideways scroll. The Horizon screen is swept through every site, height, period and replay at phone width. The first screen puts the tour first and leads to the base plan; on a phone the Horizon screen shows the picture before the settings and the list of sites is short. |
 | `links` | A link restores the whole view; a broken link falls back to safe values. |
 | `plan` | Objects can be placed, moved and removed; a tower put between a mast and the Sun takes sunlight from the mast. |
 | `rover` | Route search and battery model against `rover_reference.json`, which is produced by an independent Python model (`build/rover_check.py`); then 40 random scenarios checked against rules every route must obey. |

@@ -1,0 +1,22 @@
+# Runs the automatic checks of tests/ in a headless browser on every push.
+name: tests
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the headless browser
+        run: |
+          pip install playwright pillow
+          playwright install --with-deps chromium
+      - name: Run the checks
+        run: python3 tests/run.py

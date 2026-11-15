@@ -1,9 +1,15 @@
 # build/
 
-Python scripts that turn the NASA files into the small files in `data/`. They are kept as they were run during the hackathon; the paths at the top of each script point to the folder with the downloaded NASA files (`LDEM_*.IMG`, `AVGVISIB_*.IMG`, `de421.bsp`).
+Python scripts that turn the NASA files into the small files in `data/`. They are kept as they were run during the hackathon. Two environment variables say where things are (see `paths.py`): `LS_NASA_DIR` is the folder with the downloaded NASA files (`LDEM_*.IMG`, `AVGVISIB_*.IMG`, the 5 m site maps, the Diviner maps), `LS_DATA_DIR` is the site's `data/` folder (default `../data`). Run the scripts from this folder.
+
+```
+export LS_NASA_DIR=/path/to/nasa-files
+cd build && python3 slopes5m.py
+```
 
 | Script | Makes |
 |---|---|
+| `paths.py` | where the NASA files and the site's data folder are |
 | `dem.py` | reader for LOLA polar maps (shared by the others) |
 | `ephem.py`, `make_ephem_long.py` | hourly Sun and Earth directions, Aug 2023 – Dec 2028 (`ephem.json`) |
 | `horizon.py`, `compute_sites.py`, `sites.py` | skyline and statistics of every site (`sites.json`) |

@@ -6,13 +6,15 @@ NASA Space Apps Challenge 2026 · challenge *Lunar Landing Site Navigator* · so
 
 Live site: **https://hvozdzvera.github.io/long-shadows/**
 
+[![tests](https://github.com/hvozdzvera/long-shadows/actions/workflows/tests.yml/badge.svg)](https://github.com/hvozdzvera/long-shadows/actions/workflows/tests.yml)
+
 At the Moon's south pole the Sun never climbs above 1.6°, so a hill a few kilometres away decides whether a lander has power. Long Shadows shows, for 18 landing sites and for any point you click, the Sun and Earth moving over the real skyline, and turns that into a plain verdict for a chosen landing date: how long the sunlight lasts, whether Earth is in view, how steep the ground is, how far the nearest permanent shadow lies. On top of that it lets you lay out a base on real terrain, see which mast shades which, and send a rover round the shadow that would empty its battery.
 
 The tool is meant for quick comparison of sites and dates and for teaching. It is not a mission design tool: see *Limits* on the About screen. Finer terrain exists and is not used in this version: NASA's LROC NAC digital terrain models (down to 1–2 m per pixel) for parts of the Connecting Ridge, Shackleton rim, Malapert and Nobile areas; they are the natural next step for slope and hazards at lander scale.
 
 ## Judge guide: the tool in 60 seconds
 
-Open the site and press **▶ Start here** on the first screen. The tour takes you through these seven steps; each can also be reached by hand.
+Open the site and press **▶ Start here** on the first screen. The tour takes you through these seven steps; each can also be reached by hand. Short of time? Press **Plan a base** next to it: that screen is what sets this tool apart.
 
 | # | Screen | What to look at |
 |---|---|---|
@@ -37,7 +39,7 @@ The switch **Standard / Advanced** in the header changes the depth, not the calc
 
 | Where | What Advanced adds |
 |---|---|
-| **02 Horizon**, verdict | The verdict as a table of figures with sources. Ground slope at lander scale from NASA's 5 m map of the site, for the six sites that have one. Which NASA Deep Space Network complex (Goldstone, Madrid, Canberra) has the Moon in its sky at that hour; surface temperature and the depth at which buried ice would last (LRO Diviner maps). |
+| **02 Horizon**, verdict | The verdict as a table of figures with sources. Ground slope at lander scale from NASA's 5 m map of the site, for the six sites that have one. Which NASA Deep Space Network complex (Goldstone, Madrid, Canberra) has the Moon in its sky at that hour; surface temperature and the depth at which buried ice would last (LRO Diviner maps). The site's own figures next to NASA's illumination map, and the typical difference over all checked sites. |
 | **02 Horizon**, below | All five summary figures and the energy estimate; the hourly table as CSV with three station columns; the skyline of the site as CSV, 720 directions. |
 | **03 Compare** | Six more rows (link gap, highest Sun, permanent shadow, slope at lander scale, temperature, buried ice) and every site in one sortable table with CSV. |
 | **05 About** | The full method and the full list of sources. |
@@ -114,7 +116,7 @@ python3 -m http.server 8000      # then open http://localhost:8000
 
 Opening `index.html` as a local file does not work, because browsers do not let a page read data files from disk.
 
-To make `data/` again from the NASA files, download the files listed in [build/README.md](build/README.md) into one folder, set the paths at the top of each script to that folder, and run the scripts in the order of that table (`pip install numpy scipy pillow scikit-image matplotlib tifffile jplephem de421 astropy`). The site itself needs none of this: `data/` is already in the repository.
+To make `data/` again from the NASA files, download the files listed in [build/README.md](build/README.md) into one folder, point `LS_NASA_DIR` at that folder, and run the scripts in the order of that table (`pip install numpy scipy pillow scikit-image matplotlib tifffile jplephem de421 astropy`). The site itself needs none of this: `data/` is already in the repository.
 
 ## History
 
@@ -127,7 +129,7 @@ pip install playwright pillow && playwright install chromium
 python3 tests/run.py
 ```
 
-The tests compare the browser with the Python pipeline and with an independent rover model, sweep every screen at six widths, and walk through the tour. Details: [tests/README.md](tests/README.md).
+The tests compare the browser with the Python pipeline and with an independent rover model, sweep every screen at six widths, and walk through the tour. GitHub runs them on every push (`.github/workflows/tests.yml`). Details: [tests/README.md](tests/README.md).
 
 ## Licence
 

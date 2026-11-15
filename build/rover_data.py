@@ -4,12 +4,13 @@
 2. rover_slope: mean ground slope in the cell, from the LOLA 20 m map (rise over 40 m).
 Run:  python3 rover_data.py part 0 2 &  python3 rover_data.py part 1 2 ;  python3 rover_data.py join 2"""
 import sys, json, time, numpy as np
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from dem import PolarDEM
 import os
 SITE = os.environ.get('LS_SITE', 'ridge'); SUF = '' if SITE == 'ridge' else '_' + SITE          # which site the box is centred on; files of other sites carry its id
 import hz_browser as hb
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)
 RM = 1737400.0
 ridge = next(s for s in json.load(open('sites_out.json')) if s['id'] == SITE)
@@ -66,7 +67,7 @@ if __name__ == "__main__" and sys.argv[1] == "join":
     H1 = HZ.reshape(G, G, 360, 2).mean(-1)                       # 1 deg bins: bin j covers [j, j+1) deg, value = mean of its two half-degree bins
     Q, OFF = 0.05, 4.0
     q = np.clip(np.round((H1 + OFF) / Q), 0, 255).astype(np.uint8).reshape(G * G, 360)
-    Image.fromarray(q, 'L').save(f'../site/data/rover_hz{SUF}.png', optimize=True)
+    Image.fromarray(q, 'L').save(f'{DATA}rover_hz{SUF}.png', optimize=True)
     # slope: LOLA 20 m heights on a 20 m lattice of the plan frame, rise over 40 m, mean of the four 20 m points of each cell
     g20 = (np.arange(2 * G) + 0.5) * 20.0 - L / 2; E2, N2 = np.meshgrid(g20, -g20)
     hh = lambda e, n: ultra.height(x0 + e * ex + n * nx, y0 + e * ey + n * ny)
@@ -88,8 +89,8 @@ if __name__ == "__main__" and sys.argv[1] == "join":
             "slope_b64": base64.b64encode(np.clip(np.round(slc / 0.25), 0, 255).astype(np.uint8).tobytes()).decode(), "slope_q": 0.25,
             "check": {"cells": len(OWN), "hours": 8760, "agree_pct": round(100 * same / tot, 2), "lit_pct_full": round(100 * lit_x / tot, 1), "lit_pct_short": round(100 * lit_b / tot, 1)},
             "note": "rover_hz.png: one row per cell (row index = r*grid + c, r from the north edge, c from the west edge), 360 columns = directions in the plan frame (column j = j+0.5 deg clockwise from the plan's north), value*q-off = skyline elevation in degrees, 2 m above the ground. slope: mean slope of the cell in degrees = byte*slope_q, LOLA 20 m, rise over 40 m."}
-    json.dump(meta, open(f'../site/data/rover{SUF}.json', 'w'), separators=(',', ':'))
+    json.dump(meta, open(f'{DATA}rover{SUF}.json', 'w'), separators=(',', ':'))
     import os
-    print('png', os.path.getsize(f'../site/data/rover_hz{SUF}.png'), 'bytes; hz range', float(H1.min()), float(H1.max()), '; clipped high', float((H1 > 8.75).mean()), 'low', float((H1 < -4).mean()))
+    print('png', os.path.getsize(f'{DATA}rover_hz{SUF}.png'), 'bytes; hz range', float(H1.min()), float(H1.max()), '; clipped high', float((H1 > 8.75).mean()), 'low', float((H1 < -4).mean()))
     print('slope: median', float(np.median(slc)), 'p90', float(np.percentile(slc, 90)), 'max', float(slc.max()), ' share <=15:', float((slc <= 15).mean()), ' <=10:', float((slc <= 10).mean()))
     print('check', meta['check'])

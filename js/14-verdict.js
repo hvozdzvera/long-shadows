@@ -32,6 +32,12 @@ function bottomLine(pc, lc, gcls) {
   return `<b>Bottom line.</b> ${t}`;
 }
 // Advanced: the same verdict as a table of figures with their sources
+// mean gap between our sunlight and Earth-in-view figures and NASA's average maps, over the sites that have both (the same figures as on the About screen)
+function nasaGap() {
+  if (!nasaGap.v) { const q = S.sites.filter(s => s.nasa_sun_pct != null), m = (f) => q.reduce((p, s) => p + Math.abs(f(s)), 0) / q.length;
+    nasaGap.v = { n: q.length, sun: m(s => s.stats_2027_2028["2"].sun_pct - s.nasa_sun_pct), earth: m(s => s.stats_2027_2028["2"].earth_pct - s.nasa_earth_pct) }; }
+  return nasaGap.v;
+}
 function verdictTable(c, i, v) {
   const s = c.site, rows = [], X = XD.state === "ready" ? XD : null, pct1 = (x) => x.toFixed(1) + "%", deg = (x) => fx(x, 2) + "°", T = "LOLA skyline, JPL DE421";
   const add = (name, val, from, cls) => rows.push(`<tr><td>${name}</td><td class="${cls || ""}">${val}</td><td>${from}</td></tr>`);
@@ -53,6 +59,9 @@ function verdictTable(c, i, v) {
     add("Slope within 100 m, 5 m map: median / 95th percentile / share ≤ 10°", trio(f.r100), `LOLA 5 m site map “${f.map}” (Barker et al. 2021)`, k10(f.r100.ok10));
     add("Slope within 500 m, 5 m map: median / 95th percentile / share ≤ 10°", trio(f.r500), `LOLA 5 m site map “${f.map}”`, k10(f.r500.ok10));
   }
+  { const G = nasaGap(), st = s.stats_2027_2028 && s.stats_2027_2028["2"], M = "NASA LOLA average visibility maps, 240 m, 18.6-year mean";
+    if (st && s.nasa_sun_pct != null) add("Check, 2027–2028 at 2 m: sunlight ours / NASA map · Earth in view ours / NASA map", `${pct1(st.sun_pct)} / ${pct1(s.nasa_sun_pct)} · ${pct1(st.earth_pct)} / ${pct1(s.nasa_earth_pct)}`, M);
+    add(`Typical difference from NASA's maps, ${G.n} sites: sunlight / Earth in view`, `±${G.sun.toFixed(1)} / ±${G.earth.toFixed(1)} percentage points`, "see About, Check against NASA maps"); }
   add("Nearest permanent shadow: distance / area", s.psr ? `${s.psr.km.toFixed(1)} km / ${s.psr.area < 10 ? s.psr.area.toFixed(1) : Math.round(s.psr.area)} km²` : "no data", "LOLA map of average sunlight, patches from 1 km²");
   const t = X && X.d.diviner && (X.d.diviner.sites[s.id] || (s.id === "custom" ? divAt(s.lat, s.lon) : null));
   if (t) {

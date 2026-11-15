@@ -5,6 +5,7 @@ Greenwich mean sidereal time (IAU 1982), UT1 taken equal to UTC; nutation left o
 far finer than the 10 deg line used here. Checked below against an independent library (astropy / ERFA).
 Writes site/data/dsn.json: elevation of the Moon at the three complexes for every hour, in whole degrees."""
 import sys, json, base64, numpy as np, datetime as dt
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from ephem import E, jd_tdb
 STATIONS = [  # 70 m antennas; geodetic latitude, east longitude, height above the ellipsoid (m)
@@ -73,4 +74,4 @@ if __name__ == "__main__":
                  none_pct=round(100 * float((~up.any(0)).mean()), 2), check=chk,
                  note="el_b64: int8, three rows of n hours (Goldstone, Madrid, Canberra) from 2023-08-01T00Z: elevation of the Moon in whole degrees, rounded down",
                  el_b64=base64.b64encode(q.tobytes()).decode())
-        json.dump(d, open('../site/data/dsn.json', 'w'), separators=(',', ':')); import os; print('written dsn.json', os.path.getsize('../site/data/dsn.json') // 1024, 'KB')
+        json.dump(d, open(DATA + 'dsn.json', 'w'), separators=(',', ':')); import os; print('written dsn.json', os.path.getsize(DATA + 'dsn.json') // 1024, 'KB')

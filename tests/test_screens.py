@@ -38,6 +38,16 @@ async def run(browser):
         r = await page.evaluate("""() => { const t = document.getElementById("door-tour").getBoundingClientRect(), others = [...document.querySelectorAll("#v-home .cta .btn")].map(b => b.getBoundingClientRect());
             return [t.width > 0 && t.bottom <= innerHeight, others.every(b => b.top >= t.bottom - 1), t.height >= Math.max(...others.map(b => b.height)), /Standard/.test(document.querySelector(".mode-note").innerText) && /Advanced/.test(document.querySelector(".mode-note").innerText)]; }""")
         c.ok(f"{w} px, first screen: the tour is the first and largest button, seen without scrolling; one line says what the two modes are", all(r), r)
+        await page.click("#door-plan")
+        await page.wait_for_timeout(900)
+        c.ok(f"{w} px, first screen: the second large button opens the base plan", await page.evaluate("location.hash") == "#plan")
+        await page.evaluate("location.hash = '#site'")
+        await page.wait_for_timeout(900)
+        r = await page.evaluate("['.pano-box', '.timebar', '.controls', '#verdict'].map(q => { const b = document.querySelector('#v-site ' + q).getBoundingClientRect(); return [Math.round(b.top + scrollY), Math.round(b.left)]; })")
+        if w < 500:
+            c.ok(f"{w} px, Horizon: the picture comes first, then the time controls, the settings and the verdict", r[0][0] < r[1][0] < r[2][0] < r[3][0], [q[0] for q in r])
+        else:
+            c.ok(f"{w} px, Horizon: the settings stand to the left of the picture, level with it", r[2][1] < r[0][1] and abs(r[2][0] - r[0][0]) < 4, r)
         await page.evaluate("location.hash = '#sites'")
         await page.wait_for_timeout(900)
         r = await page.evaluate("[[...document.querySelectorAll('.srow > p')].filter(e => e.getClientRects().length).length, document.querySelectorAll('.srow').length, [...document.querySelectorAll('#chips button')].map(b => b.textContent.trim())]")

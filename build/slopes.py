@@ -2,9 +2,10 @@
 Slope = gradient of height over two map cells (central difference), corrected for the map scale.
 Zone = circle of 500 m radius around the site point."""
 import sys, json, numpy as np
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from dem import PolarDEM
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 coarse = PolarDEM(D + "LDEM_60S_240M.IMG", 7760, 240, 3879.5)
 fine = PolarDEM(D + "LDEM_80S_80M.IMG", 7600, 80, 3799.5)
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)
@@ -27,7 +28,7 @@ def site_slope(lat, lon, dm=None, rz=RZ):
     return dict(typ=round(float(np.median(sl)), 1), p95=round(float(np.percentile(sl, 95)), 1), max=round(float(sl.max()), 1),
                 ok10=int(round(float((sl <= 10).mean() * 100))), at=round(at, 1), cell=int(dm.scale), zone=int(rz))
 if __name__ == "__main__":
-    sites = json.load(open('/home/claude/ls/site/data/sites.json'))
+    sites = json.load(open(DATA + 'sites.json'))
     for s in sites:
         r = site_slope(s['lat'], s['lon'])
         if r is None: print(f"{s['id']:10s} -"); continue
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         w = site_slope(s['lat'], s['lon'], rz=1500)
         print(f"{s['id']:10s} cell {r['cell']:3d}  at {r['at']:5.1f}  typ {r['typ']:5.1f}  p95 {r['p95']:5.1f}  max {r['max']:5.1f}  <=10deg {r['ok10']:3d}%   | 1.5 km: typ {w['typ']:5.1f} ok10 {w['ok10']:3d}%{extra}")
     if "--write" in sys.argv:           # run after the site export: adds "slope" to every site in the app's data file
-        P = '/home/claude/ls/site/data/sites.json'
+        P = DATA + 'sites.json'
         for s in sites:
             r = site_slope(s['lat'], s['lon'])
             if r: s['slope'] = {k: r[k] for k in ('typ', 'p95', 'ok10', 'at', 'cell', 'zone')}

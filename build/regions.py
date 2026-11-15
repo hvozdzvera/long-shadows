@@ -1,11 +1,12 @@
 # NASA's nine Artemis III candidate regions (USGS outlines, lon/lat): which of our points lie inside, and the best-lit spot of each region
 import json, numpy as np
+from paths import NASA, DATA
 from matplotlib.path import Path
 from dem import PolarDEM
 from sites import SITES
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 sunmap = PolarDEM(D + "AVGVISIB_65S_240M_201608.IMG", 6420, 240, 3209.5)
-G = json.load(open("../dl/regions/regions.geojson"))
+G = json.load(open(NASA + "regions/regions.geojson"))
 REG = []
 for f in G["features"]:
     ring = np.array(f["geometry"]["coordinates"][0]); x, y = sunmap.ll2xy(ring[:, 1], ring[:, 0])
@@ -29,5 +30,5 @@ if __name__ == "__main__":
         side = np.linalg.norm(xy[1] - xy[0]) / 1000
         best[r["code"]] = (round(float(la), 4), round(float(lo), 3))
         print(f'{r["code"]} {r["name"]:22s} side {side:5.1f} km  best-lit {la:9.4f} {lo:8.3f}  NASA sun {V[k]:.1f}%  check inside: {inside(la, lo)}')
-    json.dump([dict(name=r["name"], code=r["code"], ring=r["ring"]) for r in REG], open("../site/data/regions.json", "w"), separators=(",", ":"))
+    json.dump([dict(name=r["name"], code=r["code"], ring=r["ring"]) for r in REG], open(DATA + "regions.json", "w"), separators=(",", ":"))
     json.dump(best, open("regions_best.json", "w"))

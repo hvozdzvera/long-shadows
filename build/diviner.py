@@ -6,10 +6,11 @@ The grids are polar stereographic in units of the lunar radius. Their orientatio
 found here: of the eight possible flips and turns, the right one is the one whose Tmax map follows NASA's map of average sunlight.
 Writes site/data/expert.json (read only by the Expert mode)."""
 import sys, json, numpy as np, tifffile
+from paths import NASA, DATA
 from scipy.io import netcdf_file
 sys.path.insert(0, '.')
 from dem import PolarDEM, R
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 def grd(f):
     nc = netcdf_file(D + f, "r", mmap=False); return nc.variables["z"][:].astype(np.float32), float(nc.variables["x"][-1])
 tmean, half = grd("polar_south_80_Tmean.grd"); tmax, _ = grd("polar_south_80_Tmax.grd")
@@ -50,7 +51,7 @@ def at(a, lat, lon):
     if not (1 <= r < N - 2 and 1 <= c < N - 2): return None
     w = a[int(round(r)) - 1:int(round(r)) + 2, int(round(c)) - 1:int(round(c)) + 2]          # 3 x 3 pixels, about 700 m
     return None if not np.isfinite(w).any() else float(np.nanmedian(w))
-sites = json.load(open('/home/claude/ls/site/data/sites.json')); out = {}
+sites = json.load(open(DATA + 'sites.json')); out = {}
 for s in sites:
     if s['lat'] > -80.05: continue
     a, b, z = at(TM, s['lat'], s['lon']), at(TX, s['lat'], s['lon']), at_ice(s['lat'], s['lon'])
@@ -83,9 +84,9 @@ print("node spacing", round(PX, 2), "m; coarse copy", rgb.shape, "; at", len(gap
 raster["check"] = dict(sites=len(gap), max_mean_k=int(max(g[0] for g in gap)), max_highest_k=int(max(g[1] for g in gap)), typ_mean_k=float(np.median([g[0] for g in gap])), typ_highest_k=float(np.median([g[1] for g in gap])))
 if "--write" in sys.argv:
     from PIL import Image
-    Image.fromarray(rgb, "RGB").save('/home/claude/ls/site/data/diviner_480m.png', optimize=True)
-    import os; print("diviner_480m.png", os.path.getsize('/home/claude/ls/site/data/diviner_480m.png') // 1024, "KB")
-    P = '/home/claude/ls/site/data/expert.json'
+    Image.fromarray(rgb, "RGB").save(DATA + 'diviner_480m.png', optimize=True)
+    import os; print("diviner_480m.png", os.path.getsize(DATA + 'diviner_480m.png') // 1024, "KB")
+    P = DATA + 'expert.json'
     try: e = json.load(open(P))
     except Exception: e = {}
     e['diviner'] = dict(src="LRO Diviner polar maps, 240 m per pixel: Schorghofer & Williams 2020, PSJ 1, 54", orientation=best[0], check_r=round(best[1], 3), ice_orientation=zbest[0], ice_check_r=round(zbest[1], 3), ice_max_m=round(float(np.nanmax(zit)), 2), raster=raster, sites=out)

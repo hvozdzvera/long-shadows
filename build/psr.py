@@ -2,10 +2,11 @@
 (AVGVISIB_65S_240M, Mazarico et al. 2011): pixels that are never lit in the 18.6-year simulation.
 Only shadowed patches of at least 1 km2 count. Distance is measured to the nearest pixel of the patch."""
 import sys, json, numpy as np
+from paths import NASA, DATA
 from scipy import ndimage
 sys.path.insert(0, '.')
 from dem import PolarDEM
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 sunmap = PolarDEM(D + "AVGVISIB_65S_240M_201608.IMG", 6420, 240, 3209.5)
 A = np.asarray(sunmap.a)
 psr = A == 0
@@ -24,7 +25,7 @@ def nearest(lat, lon):
     return dict(km=float(round(float(d[k]) / kk / 1000, 1)), area=round(float(area[lab[ii[k], jj[k]] - 1]), 1), lat=round(float(la), 3), lon=round(float(lo), 2),
                 own=round(float(A[int(round(sunmap.off - y / 240)), int(round(sunmap.off + x / 240))]) * 0.004, 1))
 if __name__ == "__main__":
-    P = '/home/claude/ls/site/data/sites.json'
+    P = DATA + 'sites.json'
     sites = json.load(open(P))
     for s in sites:
         r = nearest(s['lat'], s['lon'])

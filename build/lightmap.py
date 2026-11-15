@@ -1,12 +1,13 @@
 # Sunlight map for the base plan: share of 2027 with the Sun in view for a 10 m mast at each cell of the 4 km box
 import sys, json, base64, time, numpy as np
+from paths import NASA, DATA
 sys.path.insert(0, '.')
 from dem import PolarDEM
 import os
 SITE = os.environ.get('LS_SITE', 'ridge'); SUF = '' if SITE == 'ridge' else '_' + SITE          # which site the box is centred on; files of other sites carry its id
 from ephem import azel
 import hz_browser as hb
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)
 RM = 1737400.0; NB = 720
 ridge = next(s for s in json.load(open('sites_out.json')) if s['id'] == SITE)
@@ -45,7 +46,7 @@ for r in range(G):
         out[r, c] = np.clip((sel - np.interp(saz, grid, hz, period=360)) / (2 * 0.2666) + 0.5, 0, 1).mean() * 100
     if r % 5 == 0: print(r, round(time.time() - t), 's', flush=True)
 np.save(f'lightmap{SUF}.npy', out)
-p = f'../site/data/plan{SUF}.json'; plan = json.load(open(p))
+p = f'{DATA}plan{SUF}.json'; plan = json.load(open(p))
 plan['light'] = {"grid": G, "height_m": HOBS, "year": 2027, "b64": base64.b64encode(np.round(out).astype(np.uint8).tobytes()).decode(),
                  "note": "percent of 2027 with at least part of the Sun's disc above the skyline (mean visible fraction), 10 m above ground, 80 m cells, row 0 = north edge"}
 json.dump(plan, open(p, 'w'), separators=(',', ':'))

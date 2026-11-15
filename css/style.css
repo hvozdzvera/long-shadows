@@ -574,9 +574,11 @@ select { border-radius: 4px; background: linear-gradient(180deg, #f3f4f2, #dcded
 .xl-out th { font-family: var(--f-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 400; }
 @media (min-width: 761px) { .tiles.t3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .cmp-sum { margin: 14px 0 0; font-size: 16px; line-height: 1.45; max-width: 95ch; }
-.tour-btn { justify-self: start; font-size: 16px; padding: 13px 20px; }
+.tour-btn { font-size: 16px; padding: 13px 20px; } .home-lead { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; }
+.lead-note { flex: 1 0 100%; margin: 2px 0 0; text-transform: none; letter-spacing: .02em; font-size: 12.5px; color: var(--ink-2); max-width: 62ch; } .lead-note b { color: var(--ink); }
 .mode-note { margin: 0; text-transform: none; letter-spacing: .02em; font-size: 12.5px; color: var(--ink-2); max-width: 62ch; } .mode-note b { color: var(--ink); }
-@media (max-width: 760px) { .home-text > #door-tour { order: 1; justify-self: stretch; text-align: center; } .home-text > .lede, .home-text > .facts, .home-text > .cta, .home-text > .mode-note, .home-text > #door-date { order: 2; } }
+@media (max-width: 760px) { .home-text > .home-lead { order: 1; } .home-lead > .btn { flex: 1 1 100%; justify-content: center; text-align: center; } .home-text > .lede, .home-text > .facts, .home-text > .cta, .home-text > .mode-note, .home-text > #door-date { order: 2; } }
+@media (max-width: 760px) { .site-grid > .center { display: contents; } .site-grid > .center > :first-child { order: -3; } .site-grid > .center > .timebar { order: -2; } .site-grid > .center > .anchor-row { order: -1; } .site-grid { gap: 18px; } }
 @media (min-width: 1101px) { .chk-text { columns: 2; column-gap: 44px; } .chk-text p { break-inside: avoid; max-width: none; } .chk-text p:first-child { margin-top: 0; } }      /* About: the notes on the checks use the full width */
 @media (max-width: 760px) { html:not(.expert) .srow:not([aria-current="true"]) > p { display: none; } }      /* phone, Standard: the description opens when a site is chosen */      /* phone: the tour comes right after the title */
 .vd-sum { margin: 2px 0 4px; font-size: 16px; line-height: 1.45; }

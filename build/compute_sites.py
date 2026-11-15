@@ -1,10 +1,11 @@
 import sys, json, time, numpy as np
+from paths import NASA
 sys.path.insert(0, '.')
 from dem import PolarDEM
 from horizon import horizon, NB
 from ephem import azel, enu, R_MOON
 from sites import SITES
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 coarse = PolarDEM(D + "LDEM_60S_240M.IMG", 7760, 240, 3879.5)
 fine = PolarDEM(D + "LDEM_80S_80M.IMG", 7600, 80, 3799.5)
 ultra = PolarDEM(D + "LDEM_875S_20M.IMG", 7584, 20, 3791.5)

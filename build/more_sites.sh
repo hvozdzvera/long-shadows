@@ -1,6 +1,6 @@
 #!/bin/bash
 # plan and rover data for more sites (Expert mode). Usage: bash more_sites.sh gerlache shackleton
-cd /home/claude/ls/build
+cd "$(dirname "$0")"
 for S in "$@"; do
   export LS_SITE=$S; echo "=== $S $(date +%H:%M:%S)"
   python3 plan_v4.py && python3 plan_contours.py && python3 lightmap.py | tail -2

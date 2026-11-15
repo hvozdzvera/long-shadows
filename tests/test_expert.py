@@ -24,10 +24,16 @@ async def run(browser):
     rows = await page.evaluate(TABLE)
     names = [r[0] for r in rows]
     c.ok("Advanced: the verdict becomes a table with stations, 5 m slope, temperature and ice",
-         len(rows) == 13 and all(len(r) == 3 and r[1] and r[2] for r in rows) and "DSN complex in position now" in names and any(n.startswith("Slope within 100 m, 5 m map") for n in names)
+         len(rows) == 15 and all(len(r) == 3 and r[1] and r[2] for r in rows) and "DSN complex in position now" in names and any(n.startswith("Slope within 100 m, 5 m map") for n in names)
          and "Surface temperature: mean / highest" in names and not await page.evaluate("!!document.querySelector('#verdict .vd-row')"), names[5:])
     shown = await page.evaluate(f"[({SHOWN})('#tiles .tile'), document.getElementById('energy').hidden, ({SHOWN})('#csv-save'), ({SHOWN})('.why-col')]")
     c.ok("Advanced: five summary figures, the energy line, CSV buttons, no explanation column", shown == [5, False, 1, 0], shown)
+    ridge = next(q for q in sites if q["id"] == "ridge"); st = ridge["stats_2027_2028"]["2"]
+    both = [q for q in sites if q.get("nasa_sun_pct") is not None]
+    gs = sum(abs(q["stats_2027_2028"]["2"]["sun_pct"] - q["nasa_sun_pct"]) for q in both) / len(both); ge = sum(abs(q["stats_2027_2028"]["2"]["earth_pct"] - q["nasa_earth_pct"]) for q in both) / len(both)
+    chk = next(r[1] for r in rows if r[0].startswith("Check, 2027")); typ = next(r for r in rows if r[0].startswith("Typical difference"))
+    c.ok("Advanced: the verdict shows this site next to NASA's map, and the typical difference over all sites that have both",
+         chk == f"{st['sun_pct']:.1f}% / {ridge['nasa_sun_pct']:.1f}% · {st['earth_pct']:.1f}% / {ridge['nasa_earth_pct']:.1f}%" and typ[1] == f"±{gs:.1f} / ±{ge:.1f} percentage points" and f"{len(both)} sites" in typ[0], [chk, typ[1]])
     await page.reload()
     await page.wait_for_function("typeof S !== 'undefined' && S.n > 0 && !document.getElementById('loading')")
     c.ok("the choice is remembered after a reload", await page.evaluate("S.expert"))

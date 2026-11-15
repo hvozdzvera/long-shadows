@@ -1,10 +1,11 @@
 # High-resolution heights around the south pole for the home hero and the 3D view: 2048 px, 400 km across (195 m per pixel), from LOLA LDEM_80S_80M.
 import numpy as np, json
+from paths import NASA, DATA
 from PIL import Image
 from dem import PolarDEM
-D = "/mnt/user-data/uploads/Астрономия/SpaceApps2026/"
+D = NASA
 fine = PolarDEM(D + "LDEM_80S_80M.IMG", 7600, 80, 3799.5)
-OUT = '../site/data/'; OFF = 20000; N = 2048; px = 400000.0 / N
+OUT = DATA; OFF = 20000; N = 2048; px = 400000.0 / N
 g = (np.arange(N) + 0.5) * px - N * px / 2
 X, Y = np.meshgrid(g, -g)
 H = np.zeros((N, N)); sub = (np.arange(3) + 0.5) / 3 - 0.5
